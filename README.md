@@ -1,5 +1,5 @@
 # 🚀 Setup & Deployment Guide  
-## ☑️ Prerequisites
+## 📍 Prerequisites
 Untuk menjalankan proyek ini, anda harus menginstal: 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)  
 - [Git](https://git-scm.com/downloads)
