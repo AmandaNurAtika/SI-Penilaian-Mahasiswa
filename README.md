@@ -1,4 +1,4 @@
- **Setup & Deployment Guide**
+![Rocket](https://example.com/rocket.png) **Setup & Deployment Guide**
  **Prerequisites**
 Untuk menjalankan proyek ini, anda harus menginstal: 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)  
