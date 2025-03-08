@@ -8,7 +8,7 @@ Untuk menjalankan proyek ini, anda harus menginstal:
 ```
 git clone https://github.com/AmandaNurAtika/SI-Penilaian-Mahasiswa.git cd repository name
 ```
-## Setup Docker Compose
+[:gear] ## Setup Docker Compose
 1. Pastikan Docker Desktop sudah terinstal
 2. Pastikan Docker Desktop berjalan
 3. Jalankan perintah berikut untuk membuat sebuah container:
@@ -16,9 +16,9 @@ git clone https://github.com/AmandaNurAtika/SI-Penilaian-Mahasiswa.git cd reposi
 docker-compose up -d --build
 ```
 4. Pastikan container berjalan dengan baik
-   ```
-   docker ps
-   ```
+```
+docker ps
+```
    
 ## Akses Aplikasi
 - Backend (CodeIgniter): http://localhost:8080
