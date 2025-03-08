@@ -1,14 +1,14 @@
-# Setup & Deployment Guide
-## Prerequisites
+ **Setup & Deployment Guide**
+ **Prerequisites**
 Untuk menjalankan proyek ini, anda harus menginstal: 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)  
 - [Git](https://git-scm.com/downloads)
   
-## Clone Repository
+ **Clone Repository**
 ```
 git clone https://github.com/AmandaNurAtika/SI-Penilaian-Mahasiswa.git cd repository name
 ```
-[:gear] ## Setup Docker Compose
+ **Setup & Jalankan dengan Docker Compose**
 1. Pastikan Docker Desktop sudah terinstal
 2. Pastikan Docker Desktop berjalan
 3. Jalankan perintah berikut untuk membuat sebuah container:
