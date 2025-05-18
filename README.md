@@ -281,9 +281,18 @@ volumes:
     driver: local
 ```
 
-
+## 🍟 Install Dependency
+1. Untuk backend
+   - cd backend
+   - composer install
+   - cp env .env
+2. Untuk Frontend
+   - cd frontend
+   - php artisan key:generate
+   - cp .env.example .env
 
 ## 🛠️ Setup & Jalankan dengan Docker Compose
+
 1. Pastikan Docker Desktop sudah terinstal
 2. Pastikan Docker Desktop berjalan
 3. Jalankan perintah berikut untuk membuat sebuah container:
@@ -291,12 +300,15 @@ volumes:
 docker-compose up -d --build
 ```
 4. Pastikan container berjalan dengan baik
-```
-docker ps
-```
+![Screenshot (242)](https://github.com/user-attachments/assets/6267cd99-911a-467b-ad16-e0f6c68c4f39)
+
+5. Pastikan Frontend berjalan
+![Screenshot (240)](https://github.com/user-attachments/assets/c4b03148-9a32-4de9-976d-b98ff62f368c)
+
+
    
 ## 🦩 Akses Aplikasi
-- Backend (CodeIgniter): 
+- Backend (CodeIgniter): http://localhost:8080/
 - Frontend (Laravel): http://localhost:8082/
 
 ## 🐧 Konfigurasi Database
