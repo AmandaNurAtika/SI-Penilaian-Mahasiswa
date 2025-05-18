@@ -19,6 +19,8 @@ git clone  https://github.com/GalihFitria/FrontEnd-SiNilai.git frontend
 ```
 ## 🦜 Buat Struktur Proyek
 Buat struktur berikut di dalam project utama:
+### 📝 Hasil:
+```text
 Sinilai/
 │── backend/   # CodeIgniter Project
 │── frontend/  # Laravel Project
@@ -35,6 +37,7 @@ Sinilai/
         ├── www.conf
 │── Dockerfile
 │── docker-compose.yml
+```
 
 
 ## 🛠️ Setup & Jalankan dengan Docker Compose
