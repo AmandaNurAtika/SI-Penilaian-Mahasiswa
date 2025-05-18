@@ -41,6 +41,7 @@ Sinilai/
 
 ## 🍄 Setup Docker untuk Backend dan Frontend
 ### 1. Membuat file Dockerfile
+Mendefinisikan langkah-langkah untuk membangun image PHP 8.3-FPM yang dilengkapi berbagai dependensi dan ekstensi (seperti pdo_mysql, gd, mbstring, dll.), serta menginstal Composer dan menyetel permission agar aplikasi Laravel dan CodeIgniter dapat berjalan optimal dalam container.
 ```
 FROM php:8.3-fpm
 
@@ -79,6 +80,7 @@ RUN chown -R www-data:www-data /var/www
 EXPOSE 9000 
 ```
 ### 2. Membuat file my.cnf di folder mysql
+File konfigurasi ini mengaktifkan log umum MySQL, menyimpan log ke dalam file tertentu, dan menggunakan plugin autentikasi mysql_native_password agar kompatibel dengan berbagai aplikasi dan tools seperti phpMyAdmin.
 ```
 [mysqld]
 general_log = 1
@@ -86,6 +88,7 @@ general_log_file = /var/lib/mysql/general.log
 default-authentication-plugin=mysql_native_password
 ```
 ### 3. Membuat file app.conf didalam folder nginx
+Mengatur server Nginx untuk menjalankan aplikasi berbasis PHP (baik backend maupun frontend) dengan konfigurasi FastCGI, path root public, dan mendukung routing Laravel/CodeIgniter.
 ```
 server {
     listen 80;
@@ -111,6 +114,8 @@ server {
 }
 ```
 ### 4. Membuat backend.conf didalam folder nginx
+Konfigurasi khusus server backend (CodeIgniter) dengan pengaturan Nginx yang mengarahkan permintaan ke backend melalui port 80 dan PHP-FPM.
+
 ```
 server {
     listen 80;
@@ -134,6 +139,7 @@ server {
 ```
 
 ### 5. Membuat file frontend.conf didalam folder nginx
+Pengaturan server Nginx untuk Laravel frontend, agar aplikasi bisa diakses lewat browser, termasuk support untuk routing Laravel dan eksekusi file PHP via PHP-FPM.
 ```
 server {
     listen 80;
@@ -157,6 +163,7 @@ server {
 ```
 
 ### 6. Membuat file local.ini didalam folder php
+File konfigurasi tambahan untuk PHP dalam container yang meningkatkan batas upload, memori, dan waktu eksekusi agar sesuai kebutuhan aplikasi
 ```
 upload_max_filesize=40M
 post_max_size=40M
@@ -166,6 +173,9 @@ max_input_time=600
 ```
 
 ### 7. Membuat file www.conf didalam folder php
+Pengaturan PHP-FPM yang menentukan user/group proses, port komunikasi antar container, dan jumlah proses yang digunakan untuk menangani request secara efisien.
+
+
 ```
 [www]
 user = www-data
@@ -182,6 +192,7 @@ pm.max_spare_servers = 3
 ```
 
 ## 🍁 Membuat Docker-compose.yml
+File utama yang mengatur seluruh container (PHP, Nginx, MySQL, phpMyAdmin) termasuk build image, konfigurasi volume, port mapping, environment database, dan jaringan agar semua komponen saling terhubung dan dapat berjalan otomatis.
 ```
 version: '3.8'
 
@@ -286,10 +297,12 @@ volumes:
    - cd backend
    - composer install
    - cp env .env
+Masuk ke direktori backend, menginstal seluruh dependensi PHP melalui Composer berdasarkan file composer.json, dan menyalin file konfigurasi environment untuk CodeIgniter agar bisa membaca variabel sistem yang dibutuhkan.
 2. Untuk Frontend
    - cd frontend
    - php artisan key:generate
    - cp .env.example .env
+Masuk ke direktori frontend, menghasilkan application key Laravel yang bersifat unik dan aman, serta menyalin file .env.example menjadi .env sebagai file konfigurasi utama environment Laravel.
 
 ## 🛠️ Setup & Jalankan dengan Docker Compose
 
