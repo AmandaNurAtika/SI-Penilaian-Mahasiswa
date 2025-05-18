@@ -39,6 +39,249 @@ Sinilai/
 │── docker-compose.yml
 ```
 
+## 🍄 Setup Docker untuk Backend dan Frontend
+### 1. Membuat file Dockerfile
+```
+FROM php:8.3-fpm
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip
+
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mysqli mbstring exif pcntl bcmath gd intl
+
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www
+
+# Copy existing application directory
+COPY . /var/www
+
+# Install dependencies
+RUN composer install
+
+# Change ownership of our applications
+RUN chown -R www-data:www-data /var/www
+
+# Expose port 9000 for PHP-FPM
+EXPOSE 9000 
+```
+### 2. Membuat file my.cnf di folder mysql
+```
+[mysqld]
+general_log = 1
+general_log_file = /var/lib/mysql/general.log
+default-authentication-plugin=mysql_native_password
+```
+### 3. Membuat file app.conf didalam folder nginx
+```
+server {
+    listen 80;
+    index index.php index.html;
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+    root /var/www/public;
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass app:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+        gzip_static on;
+    }
+}
+```
+### 4. Membuat backend.conf didalam folder nginx
+```
+server {
+    listen 80;
+    index index.php index.html;
+    root /var/www/public;
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass app:9000;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+}
+
+```
+
+### 5. Membuat file frontend.conf didalam folder nginx
+```
+server {
+    listen 80;
+    index index.php index.html;
+    root /var/www/public;
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass frontend-app:9000;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+}
+
+```
+
+### 6. Membuat file local.ini didalam folder php
+```
+upload_max_filesize=40M
+post_max_size=40M
+memory_limit=512M
+max_execution_time=600
+max_input_time=600 
+```
+
+### 7. Membuat file www.conf didalam folder php
+```
+[www]
+user = www-data
+group = www-data
+
+listen = 0.0.0.0:9000
+
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+```
+
+## 🍁 Membuat Docker-compose.yml
+```
+version: '3.8'
+
+services:
+  # Backend PHP
+  app:
+    build:
+      context: ./backend
+      dockerfile: ../Dockerfile
+    image: sinilai-backend
+    container_name: sinilai-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./backend:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - sinilai-network
+
+  # Backend Nginx
+  webserver:
+    image: nginx:alpine
+    container_name: sinilai-nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend:/var/www
+      - ./docker/nginx/conf.d/backend.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - sinilai-network
+
+  # Frontend PHP (pakai container PHP yang sama)
+  frontend-app:
+    build:
+      context: ./frontend
+      dockerfile: ../Dockerfile
+    image: sinilai-frontend
+    container_name: sinilai-fe-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./frontend:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - sinilai-network
+
+  # Frontend Nginx
+  frontend-web:
+    image: nginx:alpine
+    container_name: sinilai-fe-nginx
+    restart: unless-stopped
+    ports:
+      - "8082:80"
+    volumes:
+      - ./frontend:/var/www
+      - ./docker/nginx/conf.d/frontend.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - sinilai-network
+
+  # MySQL
+  db:
+    image: mysql:8.0
+    container_name: sinilai-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: sinilai2
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3307:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - sinilai-network
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: sinilai-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    ports:
+      - "8081:80"
+    networks:
+      - sinilai-network
+
+networks:
+  sinilai-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
+```
+
+
 
 ## 🛠️ Setup & Jalankan dengan Docker Compose
 1. Pastikan Docker Desktop sudah terinstal
@@ -53,8 +296,8 @@ docker ps
 ```
    
 ## 🦩 Akses Aplikasi
-- Backend (CodeIgniter): http://localhost:8080
-- Frontend (Laravel): http://localhost:5173
+- Backend (CodeIgniter): 
+- Frontend (Laravel): http://localhost:8082/
 
 ## 🐧 Konfigurasi Database
 - Host: localhost
