@@ -1,9 +1,10 @@
 # 🚀 Setup & Deployment Guide  
 ## 📍 Prerequisites
-Untuk menjalankan proyek ini, anda harus menginstal: 
+Untuk menjalankan proyek ini harus menginstal: 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)  
-- [Git](https://git-scm.com/downloads)
+- Docker Compose
 - [PHP Versi](https://www.php.net/downloads.php#v8.3.17)
+- [Postman](https://www.postman.com/downloads/)
   
 ## 📂 Clone Repository
 ```
