@@ -3,8 +3,8 @@
 Untuk menjalankan proyek ini harus menginstal: 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)  
 - Docker Compose
-- [PHP Versi](https://www.php.net/downloads.php#v8.3.17)
-- [Postman](https://www.postman.com/downloads/)
+- [PHP Versi 8.3.17](https://www.php.net/downloads.php#v8.3.17)
+- [Postman](https://www.postman.com/downloads/) untuk API
   
 ## 📂 Clone Repository
 ```
@@ -18,6 +18,7 @@ git clone https://github.com/Arfilal/backend_sinilai.git backend
 ```
 git clone  https://github.com/GalihFitria/FrontEnd-SiNilai.git frontend
 ```
+
 ## 🦜 Buat Struktur Proyek
 Buat struktur berikut di dalam project utama:
 ### 📝 Hasil:
@@ -39,6 +40,12 @@ Sinilai/
 │── Dockerfile
 │── docker-compose.yml
 ```
+Deskripsi:
+- backend/ berisi API backend berbasis CodeIgniter.
+- frontend/ berisi tampilan antarmuka pengguna berbasis Laravel.
+- docker/ berisi konfigurasi untuk layanan Docker: MySQL, Nginx, PHP-FPM.
+- Dockerfile untuk membangun image PHP custom.
+- docker-compose.yml untuk mengelola dan menghubungkan semua container.
 
 ## 🍄 Setup Docker untuk Backend dan Frontend
 ### 1. Membuat file Dockerfile
@@ -81,7 +88,7 @@ RUN chown -R www-data:www-data /var/www
 EXPOSE 9000 
 ```
 ### 2. Membuat file my.cnf di folder mysql
-File konfigurasi ini mengaktifkan log umum MySQL, menyimpan log ke dalam file tertentu, dan menggunakan plugin autentikasi mysql_native_password agar kompatibel dengan berbagai aplikasi dan tools seperti phpMyAdmin.
+Digunakan untuk mengaktifkan logging dan memastikan MySQL menggunakan plugin autentikasi mysql_native_password, sehingga kompatibel dengan berbagai framework.
 ```
 [mysqld]
 general_log = 1
@@ -90,6 +97,12 @@ default-authentication-plugin=mysql_native_password
 ```
 ### 3. Membuat file app.conf didalam folder nginx
 Mengatur server Nginx untuk menjalankan aplikasi berbasis PHP (baik backend maupun frontend) dengan konfigurasi FastCGI, path root public, dan mendukung routing Laravel/CodeIgniter.
+Setiap file .conf diatur untuk:
+1. Menentukan folder root /var/www/public
+2. Menangani request .php dengan fastcgi_pass ke container PHP-FPM sesuai konteks:
+3. app.conf: digunakan saat PHP backend dan frontend disatukan
+4. backend.conf: mengarah ke service app
+5. frontend.conf: mengarah ke service frontend-app
 ```
 server {
     listen 80;
@@ -194,6 +207,14 @@ pm.max_spare_servers = 3
 
 ## 🍁 Membuat Docker-compose.yml
 File utama yang mengatur seluruh container (PHP, Nginx, MySQL, phpMyAdmin) termasuk build image, konfigurasi volume, port mapping, environment database, dan jaringan agar semua komponen saling terhubung dan dapat berjalan otomatis.
+File ini menjalankan seluruh aplikasi menggunakan multi-container:
+- app: Container PHP-FPM untuk backend CodeIgniter.
+- webserver: Nginx untuk melayani backend, mengarahkan ke app.
+- frontend-app: Container PHP-FPM untuk frontend Laravel.
+- frontend-web: Nginx untuk frontend Laravel, mengarahkan ke frontend-app.
+- db: Database MySQL 8, dengan database awal sinilai2.
+- phpmyadmin: Antarmuka visual untuk manajemen database MySQL.
+- Semua service berada dalam jaringan virtual sinilai-network.
 ```
 version: '3.8'
 
@@ -324,6 +345,7 @@ docker-compose up -d --build
 ## 🦩 Akses Aplikasi
 - Backend (CodeIgniter): http://localhost:8080/
 - Frontend (Laravel): http://localhost:8082/
+- PhpMyAdmin: http://localhost:8081/
 
 ## 🐧 Konfigurasi Database
 - Host: localhost
