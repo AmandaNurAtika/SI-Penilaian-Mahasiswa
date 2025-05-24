@@ -1,6 +1,8 @@
 FROM php:8.3-fpm
 
-# Install system dependencies
+# pada docker-file untuk Menyiapkan container PHP-FPM yang dibutuhkan
+
+# Mengupdate package list dan menginstal dependensi sistem yang dibutuhkan oleh PHP dan Composer
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -10,7 +12,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip
 
-# Clear cache
+
+# Membersihkan cache agar ukuran image lebih kecil
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
@@ -19,17 +22,18 @@ RUN docker-php-ext-install pdo_mysql mysqli mbstring exif pcntl bcmath gd intl
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Mengatur direktori kerja di dalam container
 WORKDIR /var/www
 
-# Copy existing application directory
+# Menyalin semua file dari direktori proyek ke dalam container
 COPY . /var/www
 
 # Install dependencies
 RUN composer install
 
-# Change ownership of our applications
+# Mengubah kepemilikan file agar dapat diakses oleh user www-data (default user PHP-FPM)
 RUN chown -R www-data:www-data /var/www
 
-# Expose port 9000 for PHP-FPM
+# Mengekspos port 9000, yang digunakan oleh PHP-FPM untuk menerima request dari Nginx
 EXPOSE 9000 
+
