@@ -5,10 +5,6 @@ Untuk menjalankan proyek ini harus menginstal:
 - [PHP Versi 8.3.17](https://www.php.net/downloads.php#v8.3.17)
 - [Postman](https://www.postman.com/downloads/) untuk API
   
-# 📂 Clone Repository
-```
-git clone https://github.com/AmandaNurAtika/SI-Penilaian-Mahasiswa.git cd Sinilai
-```
 # 📂 Clone Backend
 ```
 git clone https://github.com/Arfilal/backend_sinilai.git backend
