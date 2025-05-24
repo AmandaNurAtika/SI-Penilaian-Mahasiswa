@@ -1,4 +1,4 @@
-# 🚀 Setup & Deployment Guide  
+![Screenshot (335)](https://github.com/user-attachments/assets/a36e17f9-ef1c-4170-b3fc-563675ce6d12)# 🚀 Setup & Deployment Guide  
 ## 📍 Prerequisites
 Untuk menjalankan proyek ini harus menginstal: 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)  
@@ -338,7 +338,8 @@ docker-compose up -d --build
 ![Screenshot (242)](https://github.com/user-attachments/assets/6267cd99-911a-467b-ad16-e0f6c68c4f39)
 
 5. Pastikan Frontend berjalan
-![Screenshot (240)](https://github.com/user-attachments/assets/c4b03148-9a32-4de9-976d-b98ff62f368c)
+![Screenshot (240)][Screenshot (335)](https://github.com/user-attachments/assets/03f3c8a8-a66d-4544-9af7-24fbf77ab27c)
+
 
 
    
