@@ -46,8 +46,8 @@ Deskripsi:
 - Dockerfile untuk membangun image PHP custom.
 - docker-compose.yml untuk mengelola dan menghubungkan semua container.
 
-## 🍄 Setup Docker untuk Backend dan Frontend
-### 1. Membuat file Dockerfile
+# 🍄 Setup Docker untuk Backend dan Frontend
+## 1. Membuat file Dockerfile
 Mendefinisikan langkah-langkah untuk membangun image PHP 8.3-FPM yang dilengkapi berbagai dependensi dan ekstensi (seperti pdo_mysql, gd, mbstring, dll.), serta menginstal Composer dan menyetel permission agar aplikasi Laravel dan CodeIgniter dapat berjalan optimal dalam container.
 ```
 FROM php:8.3-fpm
@@ -86,7 +86,7 @@ RUN chown -R www-data:www-data /var/www
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000 
 ```
-### 2. Membuat file my.cnf di folder mysql
+## 2. Membuat file my.cnf di folder mysql
 Digunakan untuk mengaktifkan logging dan memastikan MySQL menggunakan plugin autentikasi mysql_native_password, sehingga kompatibel dengan berbagai framework.
 ```
 [mysqld]
@@ -94,7 +94,7 @@ general_log = 1
 general_log_file = /var/lib/mysql/general.log
 default-authentication-plugin=mysql_native_password
 ```
-### 3. Membuat file app.conf didalam folder nginx
+## 3. Membuat file app.conf didalam folder nginx
 Mengatur server Nginx untuk menjalankan aplikasi berbasis PHP (baik backend maupun frontend) dengan konfigurasi FastCGI, path root public, dan mendukung routing Laravel/CodeIgniter.
 Setiap file .conf diatur untuk:
 1. Menentukan folder root /var/www/public
@@ -126,7 +126,7 @@ server {
     }
 }
 ```
-### 4. Membuat backend.conf didalam folder nginx
+## 4. Membuat backend.conf didalam folder nginx
 Konfigurasi khusus server backend (CodeIgniter) dengan pengaturan Nginx yang mengarahkan permintaan ke backend melalui port 80 dan PHP-FPM.
 
 ```
@@ -151,7 +151,7 @@ server {
 
 ```
 
-### 5. Membuat file frontend.conf didalam folder nginx
+## 5. Membuat file frontend.conf didalam folder nginx
 Pengaturan server Nginx untuk Laravel frontend, agar aplikasi bisa diakses lewat browser, termasuk support untuk routing Laravel dan eksekusi file PHP via PHP-FPM.
 ```
 server {
@@ -175,7 +175,7 @@ server {
 
 ```
 
-### 6. Membuat file local.ini didalam folder php
+## 6. Membuat file local.ini didalam folder php
 File konfigurasi tambahan untuk PHP dalam container yang meningkatkan batas upload, memori, dan waktu eksekusi agar sesuai kebutuhan aplikasi
 ```
 upload_max_filesize=40M
@@ -185,7 +185,7 @@ max_execution_time=600
 max_input_time=600 
 ```
 
-### 7. Membuat file www.conf didalam folder php
+## 7. Membuat file www.conf didalam folder php
 Pengaturan PHP-FPM yang menentukan user/group proses, port komunikasi antar container, dan jumlah proses yang digunakan untuk menangani request secara efisien.
 
 
@@ -204,7 +204,7 @@ pm.max_spare_servers = 3
 
 ```
 
-## 🍁 Membuat Docker-compose.yml
+## 8. Membuat Docker-compose.yml
 File utama yang mengatur seluruh container (PHP, Nginx, MySQL, phpMyAdmin) termasuk build image, konfigurasi volume, port mapping, environment database, dan jaringan agar semua komponen saling terhubung dan dapat berjalan otomatis.
 File ini menjalankan seluruh aplikasi menggunakan multi-container:
 - app: Container PHP-FPM untuk backend CodeIgniter.
@@ -313,7 +313,7 @@ volumes:
     driver: local
 ```
 
-## 🍟 Install Dependency
+# 🍟 Install Dependency
 1. Untuk backend
    - cd backend
    - composer install
@@ -325,7 +325,7 @@ Masuk ke direktori backend, menginstal seluruh dependensi PHP melalui Composer b
    - cp .env.example .env
 Masuk ke direktori frontend, menghasilkan application key Laravel yang bersifat unik dan aman, serta menyalin file .env.example menjadi .env sebagai file konfigurasi utama environment Laravel.
 
-## 🛠️ Setup & Jalankan dengan Docker Compose
+# 🛠️ Setup & Jalankan dengan Docker Compose
 
 1. Pastikan Docker Desktop sudah terinstal
 2. Pastikan Docker Desktop berjalan
@@ -341,25 +341,25 @@ docker-compose up -d --build
 ![Screenshot (336)](https://github.com/user-attachments/assets/2b900720-bdd3-4120-b1af-c89ffb86e924)
 
 Untuk tampilan frontend masih menampilkan halaman login dan dashboard. Untuk fitur yang lainnya seperti Data dosen, Data Mahasiswa, Data matkul, Daata prodi, Data kelass, dan penilaian belum dapat diakses. 
-## 🦩 Akses Aplikasi
+# 🦩 Akses Aplikasi
 - Backend (CodeIgniter): http://localhost:8080/
 - Frontend (Laravel): http://localhost:8082/
 - PhpMyAdmin: http://localhost:8081/
 
-## 🐧 Konfigurasi Database
+# 🐧 Konfigurasi Database
 - Host: localhost
 - User: root
 - Password:
 - Database name: sinilai2
 
-## 🔁 Update dan rebuild 
+# 🔁 Update dan rebuild 
 Apabila ada perubahan kode, maka jalankan
 ```
 git pull origin main
 docker-compose up -d --build
 ```
 
-## 🚫 Remove Container
+# 🚫 Remove Container
 ```
 docker-compose down
 ```
