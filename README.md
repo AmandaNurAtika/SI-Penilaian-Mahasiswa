@@ -1,27 +1,26 @@
-![Screenshot (335)](https://github.com/user-attachments/assets/a36e17f9-ef1c-4170-b3fc-563675ce6d12)# 🚀 Setup & Deployment Guide  
-## 📍 Prerequisites
+# 📍 Prerequisites
 Untuk menjalankan proyek ini harus menginstal: 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)  
 - Docker Compose
 - [PHP Versi 8.3.17](https://www.php.net/downloads.php#v8.3.17)
 - [Postman](https://www.postman.com/downloads/) untuk API
   
-## 📂 Clone Repository
+# 📂 Clone Repository
 ```
 git clone https://github.com/AmandaNurAtika/SI-Penilaian-Mahasiswa.git cd Sinilai
 ```
-## 📂 Clone Backend
+# 📂 Clone Backend
 ```
 git clone https://github.com/Arfilal/backend_sinilai.git backend
 ```
-## 📂 Clone Frontend
+# 📂 Clone Frontend
 ```
 git clone  https://github.com/GalihFitria/FrontEnd-SiNilai.git frontend
 ```
 
-## 🦜 Buat Struktur Proyek
+# 🦜 Buat Struktur Proyek
 Buat struktur berikut di dalam project utama:
-### 📝 Hasil:
+## 📝 Hasil:
 ```text
 Sinilai/
 │── backend/   # CodeIgniter Project
@@ -339,10 +338,9 @@ docker-compose up -d --build
 
 5. Pastikan Frontend berjalan
 ![Screenshot (335)](https://github.com/user-attachments/assets/03f3c8a8-a66d-4544-9af7-24fbf77ab27c)
+![Screenshot (336)](https://github.com/user-attachments/assets/2b900720-bdd3-4120-b1af-c89ffb86e924)
 
-
-
-   
+Untuk tampilan frontend masih menampilkan halaman login dan dashboard. Untuk fitur yang lainnya seperti Data dosen, Data Mahasiswa, Data matkul, Daata prodi, Data kelass, dan penilaian belum dapat diakses. 
 ## 🦩 Akses Aplikasi
 - Backend (CodeIgniter): http://localhost:8080/
 - Frontend (Laravel): http://localhost:8082/
